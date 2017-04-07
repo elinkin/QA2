@@ -23,15 +23,24 @@ public class SportdirectSearchTest {
         driver.manage().window().maximize();
         driver.get("http://lv.sportsdirect.com//");
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        WebElement searchresult = wait.until(ExpectedConditions.elementToBeClickable(By.id("advertPopup")));
-        //WebElement close = driver.findElement(By.id("advertPopup"));
-        WebElement close = driver.findElement(By.xpath("//button[@class='close']"));
-        //searchresult.submit();
-        close.submit();
-
-        //WebDriverWait wait = new WebDriverWait(driver, 10);
-        //WebElement searchresult = wait.until(ExpectedConditions.elementToBeClickable(By.linkText("JavaGuru - Software Development Courses")));
-        //Assert.assertTrue(searchresult.getText().contains("JavaGuru"));
+        WebElement popup = wait.until(ExpectedConditions.elementToBeClickable(By.id("advertPopup")));
+        WebElement close = driver.findElement(By.xpath("//*[@id='advertPopup']/div/div/div[1]/button[@class='close']"));
+        close.click();
+        //WebDriverWait wait1 = new WebDriverWait(driver, 20);
+        //WebElement hovermenu = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".s_swimming > a:nth-child(1)")));
+        //Actions action = new Actions(driver);
+        WebElement sports = driver.findElement(By.xpath("//*[@id='topMenu']/ul/li[6]/a"));
+        sports.click();
+        WebDriverWait wait1 = new WebDriverWait(driver, 10);
+        WebElement popup1 = wait.until(ExpectedConditions.elementToBeClickable(By.id("advertPopup")));
+        WebElement close1 = driver.findElement(By.xpath("//*[@id='advertPopup']/div/div/div[1]/button[@class='close']"));
+        close1.click();
+        WebElement swimming = driver.findElement(By.xpath("//*[@id='dnn_ctr99319_HtmlModule_lblContent']/div/div/div[2]/div[1]/ul/li[32]/a[@href='/swimming']"));
+        //WebElement swimming = driver.findElement(By.cssSelector(".menu-margin > li:nth-child(32) > a:nth-child(1)"));
+        swimming.click();
+        //action.moveToElement(sports).moveToElement(driver.findElement(By.xpath("//[@class='SubMenuWrapper']/ul/li/ul/li[5]/ul/li[@href='/swimming']")));
+        //action.click();
+        //Assert.assertTrue(hovermenu.getText().contains("Swimming"));
         //driver.quit();
     }
 }
