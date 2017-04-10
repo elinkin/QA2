@@ -8,6 +8,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -30,17 +31,19 @@ public class SportdirectSearchTest {
         close.click();
         WebElement cookies = driver.findElement(By.id("inputAcceptCookies"));
         cookies.click();
-        //WebElement swimming = driver.findElement(By.xpath("//*[@id='dnn_ctr99319_HtmlModule_lblContent']/div/div/div[2]/div[1]/ul/li[32]/a[@href='/swimming']"));
-        //WebElement swimming = driver.findElement(By.cssSelector(".menu-margin > li:nth-child(32) > a:nth-child(1)"));
         //WebElement swimming = driver.findElement(By.xpath("//*[@id='dnn_ctr29808065_HtmlModule_lblContent']/div/div/div[2]/div[1]/ul/li[32]"));
         WebElement swimming = driver.findElement(By.xpath("//img[@src='/images/marketing/sports-aw16-image-4b.jpg']"));
         swimming.click();
         driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
         //WebElement swimsuits = driver.findElement(By.xpath("//a[@href='/swimming/ladies-swimwear/swimsuits']"));
-        WebElement swimsuits = driver.findElement(By.xpath("//*[@id='module13-img4']/a[@href='/swimming/ladies-swimwear']"));
-
-        swimsuits.click();
+        //WebElement swimsuits = driver.findElement(By.xpath("//*[@id='module13-img4']/a[@href='/swimming/ladies-swimwear']"));
+        List<WebElement> swimsuits = driver.findElements(By.xpath("//*[@id='dnn_ctr29808104_HtmlModule_lblContent']/div[2]/div[1]/div/div/div[3]/div[1]/div/div/nav/ul"));
+        //swimsuits.click();
+        for(WebElement e : swimsuits) {
+            System.out.println(e);
+        }
         System.out.println("got to this line");
+
 
         //Actions action = new Actions(driver);
         //action.moveToElement(sports).moveToElement(driver.findElement(By.xpath("//*[@id='topMenu']/ul/li[6]/div/ul/li[2]/ul/li[5]/ul/li[1]/a")));
