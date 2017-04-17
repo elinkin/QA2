@@ -44,10 +44,10 @@ public class DelfiTest {
 
         LOGGER.info("Finding first article and getting its comment count");
         WebElement articleElement  = driver.findElement(By.xpath("(//h3[@class='top2012-title'])[1]"));
-        WebElement linkElement = articleElement.findElement(By.xpath("//a[@class='top2012-title']"));
+        WebElement linkElement = articleElement.findElement(By.xpath("./a[@class='top2012-title']"));
         String articleUrl = linkElement.getAttribute("href");
         try {
-            WebElement commentsElement = articleElement.findElement(By.xpath("//a[@class='comment-count']"));
+            WebElement commentsElement = articleElement.findElement(By.xpath("./a[@class='comment-count']"));
             commentCount = loadCommentCount(commentsElement);
         } catch (NumberFormatException e) {
             LOGGER.info("Article has no comments");
