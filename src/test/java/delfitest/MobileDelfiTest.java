@@ -1,6 +1,8 @@
 package delfitest;
 
 import org.apache.log4j.Logger;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -21,7 +23,18 @@ import static org.hamcrest.core.Is.is;
 public class MobileDelfiTest {
 
     private static final Logger LOGGER = Logger.getLogger(DelfiTest.class);
+    private static WebDriver driver;
     private static final int MAX_POSTS = 5;
+
+    @BeforeClass
+    public static void setUp() {
+        driver = getDriver();
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        driver.quit();
+    }
 
     /**
      * This test will test comment count on main page and article page.
@@ -65,7 +78,12 @@ public class MobileDelfiTest {
         for (int i = 0; i < size; i++) {
             WebElement ele = counter.get(i);
             String eleString = ele.getText();
-            Integer numberOfComments = Integer.parseInt(eleString.substring(1, eleString.length() - 1));
+            int numberOfComments = 0;
+            try {
+                numberOfComments = Integer.parseInt(eleString.substring(1, eleString.length() - 1));
+            } catch (NumberFormatException e) {
+                LOGGER.info("Can't parse number of comments");
+            }
             myList.add(numberOfComments);
         }
         return myList;
@@ -77,7 +95,7 @@ public class MobileDelfiTest {
          * @return - WebDriver
          */
 
-    private WebDriver getDriver() {
+    private static WebDriver getDriver() {
         LOGGER.info("Setting global property for driver");
         System.setProperty("webdriver.gecko.driver", "/Users/elinkin/Downloads/QA course/geckodriver");
 
