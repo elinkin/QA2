@@ -79,7 +79,6 @@ public class DelfiTest {
         LOGGER.info("Comment count on comment page is correct");
 
         LOGGER.info("We are closing our browser");
-        driver.quit();
     }
 
     /**

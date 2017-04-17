@@ -24,7 +24,7 @@ public class MobileDelfiTest {
 
     private static final Logger LOGGER = Logger.getLogger(DelfiTest.class);
     private static WebDriver driver;
-    private static final int MAX_POSTS = 5;
+    private static final int MAX_ARTICLES = 5;
 
     @BeforeClass
     public static void setUp() {
@@ -44,27 +44,24 @@ public class MobileDelfiTest {
     public void commentTesting () {
         LOGGER.info("We are starting our test");
 
-        WebDriver driver = getDriver();
-
         LOGGER.info("We are opening rus.delfi.lv home page");
         driver.get("http://rus.delfi.lv");
 
         LOGGER.info("Getting comment count for desktop articles");
-        List<Integer> desktopCounters = getComments(driver, By.xpath("//*[@class='comment-count']"), MAX_POSTS);
+        List<Integer> desktopCounters = getComments(driver, By.xpath("//*[@class='comment-count']"), MAX_ARTICLES);
         System.out.println("The arraylist contains the following elements: " + desktopCounters);
 
         LOGGER.info("We are opening mobile rus.delfi.lv home page");
         driver.get("http://m.rus.delfi.lv");
 
         LOGGER.info("Getting comment count for mobile articles");
-        List<Integer> mobileCounters = getComments(driver, By.xpath("//*[@class='commentCount']"), MAX_POSTS);
+        List<Integer> mobileCounters = getComments(driver, By.xpath("//*[@class='commentCount']"), MAX_ARTICLES);
         System.out.println("The arraylist contains the following elements: " + mobileCounters);
 
         assertThat(desktopCounters, is(mobileCounters));
         LOGGER.info("Comment count for desktop and mobile version is correct");
 
         LOGGER.info("We are closing our browser");
-        driver.quit();
     }
 
     /**
