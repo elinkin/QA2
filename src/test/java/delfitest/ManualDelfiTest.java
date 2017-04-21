@@ -28,11 +28,13 @@ public class ManualDelfiTest {
 
     @BeforeClass
     public static void setUp() {
+        LOGGER.info("We are starting our test");
         driver = getDriver();
     }
 
     @AfterClass
     public static void tearDown() {
+        LOGGER.info("We are closing our browser");
         driver.quit();
     }
 
@@ -42,30 +44,33 @@ public class ManualDelfiTest {
 
     @Test
     public void commentTesting() {
-        LOGGER.info("We are starting our test");
         List<Details> details = loadArticles();
         LOGGER.info(details);
 
-        LOGGER.info("Getting comment count for desktop articles");
-
-
-        LOGGER.info("We are closing our browser");
     }
 
-    /* @Test public void commentCounting() {
-    LOGGER.info("Opening selected article");
-    driver.get("http://rus.delfi.lv/news/daily/latvia/zarplata-gendirektora-sgd-za-poltora-mesyaca-sostavila-5-944-evro.d?id=48739375");
+    @Test
+    public void commentCounting() {
+        LOGGER.info("Opening selected article");
+        driver.get("http://rus.delfi.lv/news/daily/latvia/zarplata-gendirektora-sgd-za-poltora-mesyaca-sostavila-5-944-evro.d?id=48739375");
 
-    LOGGER.info("Opening comments page");
-    WebElement comments = driver.findElement(By.xpath("//div[@id='comment-dark-skin-wrapper']/div[2]/form/a[2]"));
-    comments.click();
-    try {
-    Thread.sleep(5000);
-    } catch (InterruptedException e) {
-    e.printStackTrace();
+        LOGGER.info("Opening comments page");
+        WebElement readComments = driver.findElement(By.xpath("//div[@id='comment-dark-skin-wrapper']/div[2]/form/a[2]"));
+        readComments.click();
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        List<WebElement> expand = driver.findElements(By.xpath("//div[@class='load-more-comments-btn']"));
+        for (WebElement element : expand) {
+            element.click();
+        }
+        List anonComments = new ArrayList();
+        List<WebElement> comments = driver.findElements(By.xpath("//div[@class='comment-post-full-content']"));
+        int commentCount = comments.size();
+        LOGGER.info("Anonymous comment count is " + commentCount);
     }
-    }
-     */
 
     /**
      * Returns array of article titles and their respective number of comments
@@ -101,9 +106,9 @@ public class ManualDelfiTest {
     }
 
     /**
-     * Returns comment count of article
+     * Returns comment count of an article
      *
-     * @return - comment count
+     * @return - number of comments
      */
 
     private Integer loadCommentCount(WebElement element) {
@@ -112,6 +117,12 @@ public class ManualDelfiTest {
         LOGGER.info("Comment count is " + numberOfComments);
         return numberOfComments;
     }
+
+    /**
+     * Returns link and comment count for the provided article
+     *
+     * @return - article URL and number of comments
+     */
 
     private class Details {
         String url;
@@ -129,6 +140,7 @@ public class ManualDelfiTest {
                     ", numberOfComments=" + numberOfComments +
                     '}';
         }
+
     }
 
 

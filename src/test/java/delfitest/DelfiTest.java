@@ -66,11 +66,11 @@ public class DelfiTest {
 
         LOGGER.info("Getting comment count for registered users");
         //WebElement regcomments = wait1.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='comments-listing']/div[3]/a[1]")));
-        WebElement regUserComments = driver.findElement(By.xpath("//*[@id='comments-listing']/div/a[1]/span"));
+        WebElement regUserComments = driver.findElement(By.xpath("//div[@id='comments-listing']/div/a[1]/span"));
         Integer regCountNumber = loadCommentCount(regUserComments);
 
         LOGGER.info("Getting comment count for anonymous users");
-        WebElement anonUSerComments = driver.findElement(By.xpath("//*[@id='comments-listing']/div/a[2]/span"));
+        WebElement anonUSerComments = driver.findElement(By.xpath("//div[@id='comments-listing']/div/a[2]/span"));
         Integer anonCountNumber = loadCommentCount(anonUSerComments);
 
         LOGGER.info("Checking total comment count");
