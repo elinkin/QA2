@@ -9,6 +9,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,26 +52,48 @@ public class ManualDelfiTest {
     }
 
     @Test
-    public void commentCounting() {
+    public void commentCounting() throws InterruptedException {
         LOGGER.info("Opening selected article");
         driver.get("http://rus.delfi.lv/news/daily/latvia/zarplata-gendirektora-sgd-za-poltora-mesyaca-sostavila-5-944-evro.d?id=48739375");
 
         LOGGER.info("Opening comments page");
         WebElement readComments = driver.findElement(By.xpath("//div[@id='comment-dark-skin-wrapper']/div[2]/form/a[2]"));
         readComments.click();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        List<WebElement> expand = driver.findElements(By.xpath("//div[@class='load-more-comments-btn']"));
-        for (WebElement element : expand) {
+
+        LOGGER.info("Expanding all comments");
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebElement expand = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='load-more-comments-btn']")));
+        expand.click();
+
+        Thread.sleep(1000);
+
+        List regComments = new ArrayList();
+        List<WebElement> comments = driver.findElements(By.xpath("//*[contains(@class, 'comment-avatar-registered')]"));
+        regComments.addAll(comments);
+        int commentCount = regComments.size();
+        LOGGER.info("Registered comment count is " + commentCount);
+
+        /* same for anonymous
+         */
+        LOGGER.info("Opening anonymous comments page");
+        WebElement readComments1 = driver.findElement(By.xpath("//a[contains(@class, 'comment-thread-switcher-list-a-anon')]"));
+        readComments1.click();
+
+        LOGGER.info("Expanding all comments");
+        WebDriverWait wait1 = new WebDriverWait(driver, 10);
+        WebElement expandButton = wait1.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='load-more-comments-btn']")));
+        List<WebElement> expand1 = driver.findElements(By.xpath("//div[@class='load-more-comments-btn']"));
+        for (WebElement element : expand1) {
             element.click();
         }
+
+        Thread.sleep(1000);
+
         List anonComments = new ArrayList();
-        List<WebElement> comments = driver.findElements(By.xpath("//div[@class='comment-post-full-content']"));
-        int commentCount = comments.size();
-        LOGGER.info("Anonymous comment count is " + commentCount);
+        List<WebElement> comments1 = driver.findElements(By.xpath("//div[contains(@class, 'comment-post-full-content')]"));
+        anonComments.addAll(comments1);
+        int commentCount1 = comments1.size();
+        LOGGER.info("Anonymous comment count is " + commentCount1);
     }
 
     /**
