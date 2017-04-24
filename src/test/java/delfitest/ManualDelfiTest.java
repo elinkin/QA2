@@ -67,11 +67,9 @@ public class ManualDelfiTest {
 
         Thread.sleep(1000);
 
-        List regComments = new ArrayList();
-        List<WebElement> comments = driver.findElements(By.xpath("//*[contains(@class, 'comment-avatar-registered')]"));
-        regComments.addAll(comments);
-        int commentCount = regComments.size();
-        LOGGER.info("Registered comment count is " + commentCount);
+        List<WebElement> regComments = driver.findElements(By.xpath("//div[contains(@class, 'comment-avatar-registered')]"));
+        int regCommentCount = commentCount(regComments).size();
+        LOGGER.info("Registered comment count is " + regCommentCount);
 
         /* same for anonymous
          */
@@ -89,12 +87,17 @@ public class ManualDelfiTest {
 
         Thread.sleep(1000);
 
-        List anonComments = new ArrayList();
-        List<WebElement> comments1 = driver.findElements(By.xpath("//div[contains(@class, 'comment-post-full-content')]"));
-        anonComments.addAll(comments1);
-        int commentCount1 = comments1.size();
-        LOGGER.info("Anonymous comment count is " + commentCount1);
+        List<WebElement> anonComments = driver.findElements(By.xpath("//div[contains(@class, 'comment-avatar-anonymous')]"));
+        int anonCommentCount = commentCount(anonComments).size();
+        LOGGER.info("Anonymous comment count is " + anonCommentCount);
     }
+
+    private List commentCount (List<WebElement> element) {
+        List commentList = new ArrayList();
+        commentList.addAll(element);
+        return commentList;
+    }
+
 
     /**
      * Returns array of article titles and their respective number of comments
