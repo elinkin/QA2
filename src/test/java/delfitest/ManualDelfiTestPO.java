@@ -18,7 +18,10 @@ public class ManualDelfiTestPO {
     public void testDelfiComments() throws InterruptedException {
         LOGGER.info("We are opening rus.delfi.lv archive and searching for selected articles");
         baseFunctions.goToUrl(WEB_SITE_URL);
+        ArchivePage archivePage = new ArchivePage(baseFunctions);
 
-        LOGGER.info("Opening anonymous comments page");
+        CommentsPage commentsPage = archivePage.openArticle();
+
+        commentsPage.checkPage();
     }
 }

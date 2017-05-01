@@ -32,6 +32,7 @@ public class CommentsPage {
         String text = baseFunctions.findElements(By.className("comment-count")).get(0).getText().replaceAll("[^0-9]", "");
         int total = Integer.parseInt(text);
         System.out.println(String.format("Total number of comments: ", total));
+
         LOGGER.info("Opening registered user comments page");
         baseFunctions.click(By.className("comment-count"));
 
