@@ -129,7 +129,6 @@ public class MailHelper {
             for (Message message : messages) {
                 if (message.getSubject().equals("CV-Online: paroles atgadinajums")) {
                     String body = getMailBody(message);
-                    System.out.println(body);
                     Pattern pattern = Pattern.compile("(http://www.cv.lv/password/confirm/[a-z0-9]+)");
                     Matcher matcher = pattern.matcher(body);
                     if (matcher.find()) {
@@ -144,24 +143,5 @@ public class MailHelper {
             }
         }
         return null;
-    }
-
-    /**
-     * Method returns password recovery link from mail body
-     *
-     * @param folder folder to work with
-     * @return URL for password recovery
-     * @throws MessagingException
-     * @throws IOException
-     */
-    public String getRecoveryLinkFromMessage(String folder) throws IOException, javax.mail.MessagingException, MessagingException {
-        Pattern pattern = Pattern.compile("(http://www.cv.lv/password/confirm/[a-z0-9]+)");
-        String mail = getMail(folder);
-        System.out.println(mail);
-        Matcher matcher = pattern.matcher(mail);
-        if (matcher.find()) {
-            System.out.println(matcher.group(1));
-        }
-        return matcher.group(1);
     }
 }

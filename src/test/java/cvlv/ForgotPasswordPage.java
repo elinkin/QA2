@@ -34,7 +34,6 @@ public class ForgotPasswordPage {
      */
     public void clickSubmitBtn() {
         baseFunctions.click(SUBMIT_BTN);
-        baseFunctions.pause(3000);
         LOGGER.info("User clicks on submit button");
     }
 
