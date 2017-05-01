@@ -5,6 +5,7 @@ import core.BaseFunctions;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.io.IOException;
 public class PasswordRecoveryTest {
 
     private static final String LOGIN = "elinkinspam@gmail.com";
-    private static final String PASSWORD = "Elinka1980";
+    private static final String PASSWORD = "test123!";
     private static final String WORKIN_DIRECTORY = "INBOX";
     private static final String WEB_SITE_URL = "cv.lv";
     private static final String NEW_PASSWORD = "passw0rdTest";
@@ -24,10 +25,18 @@ public class PasswordRecoveryTest {
     private BaseFunctions baseFunctions = new BaseFunctions();
 
     /**
-     * method creates mail session
+     * method creates mail session and cleans working directory
      *
-     * @throws MessagingException
+     * @throws javax.mail.MessagingException
      */
+    @Before
+    public void startDriver() throws javax.mail.MessagingException {
+        LOGGER.info("Connecting to mail server as " + LOGIN);
+        MailHelper mailHelper = new MailHelper(LOGIN, PASSWORD);
+
+        LOGGER.info("Clean up " + WORKIN_DIRECTORY + " directory");
+        mailHelper.cleanupMailbox(WORKIN_DIRECTORY);
+    }
 
     @Test
     public void restorePassword() throws MessagingException, javax.mail.MessagingException, IOException, InterruptedException {
@@ -57,11 +66,11 @@ public class PasswordRecoveryTest {
         ChangePasswordEndPage changePasswordEndPage = createNewPasswordPage.clickSubmitBtn();
 
         Assert.assertTrue("No Success text block", changePasswordEndPage.isPresentSuccessTextBlock());
-        LOGGER.info("Password changed successfully, logging off");
-        changePasswordEndPage.clickLoginButton();
+        LOGGER.info("Password changed successfully");
 
-        LOGGER.info("User tries to login with a new password");
-        homePage = login(LOGIN, NEW_PASSWORD);
+        LOGGER.info("Logging in with the new password");
+        changePasswordEndPage.fillLoginForm(LOGIN, NEW_PASSWORD);
+        changePasswordEndPage.clickLoginButton();
 
         Assert.assertTrue("Not logged in", homePage.isPresentAccountBtn());
         LOGGER.info("Login with a new password is successful");
@@ -73,22 +82,5 @@ public class PasswordRecoveryTest {
     @After
     public void closeDriver() {
         baseFunctions.stopDriver();
-    }
-
-    /**
-     * This method is signing in the user to cv.lv
-     *
-     * @param login - user login
-     * @param password - user password
-     * @return - home page
-     */
-    private HomePage login(String login, String password) {
-        baseFunctions.goToUrl(WEB_SITE_URL);
-        HomePage homePage = new HomePage(baseFunctions);
-        homePage.clickLoginButton();
-        LoginPage loginPage = new LoginPage(baseFunctions);
-        loginPage.fillLoginForm(login, password);
-        loginPage.clickLoginBtn();
-        return new HomePage(baseFunctions);
     }
 }

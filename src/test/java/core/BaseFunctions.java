@@ -2,6 +2,7 @@ package core;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -50,7 +51,7 @@ public class BaseFunctions {
      * @param url web address
      */
     public void goToUrl(String url) {
-        if(!url.contains("http://") && !url.contains("https://")) {
+        if (!url.contains("http://") && !url.contains("https://")) {
             url = "http://" + url;
         }
         LOGGER.info("User goes to: " + url);
@@ -64,7 +65,7 @@ public class BaseFunctions {
      */
     public void click(By element) {
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        wait.until(ExpectedConditions.presenceOfElementLocated(element));
+        wait.until(ExpectedConditions.elementToBeClickable(element));
         driver.findElement(element).click();
     }
 
@@ -72,7 +73,7 @@ public class BaseFunctions {
      * This method clears input field and types text
      *
      * @param element - text field to fill
-     * @param text - text to type in
+     * @param text    - text to type in
      */
     public void fillInput(By element, String text) {
         driver.findElement(element).clear();
@@ -97,11 +98,11 @@ public class BaseFunctions {
      * Method is waiting for element to be added in DOM
      *
      * @param element - element to wait
-     * @param mills - max time to wait in milliseconds
+     * @param mills   - max time to wait in milliseconds
      */
     public void waitForElement(By element, long mills) {
         WebDriverWait wait = new WebDriverWait(driver, mills);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(element));
+        wait.until(ExpectedConditions.presenceOfElementLocated(element));
     }
 
     /**
@@ -112,7 +113,7 @@ public class BaseFunctions {
      */
     public boolean isPresentElement(By element) {
         List<WebElement> elements = driver.findElements(element);
-        if(elements.size() != 0) {
+        if (elements.size() != 0) {
             return true;
         }
         return false;
@@ -124,7 +125,7 @@ public class BaseFunctions {
      * @param element - element locator to search
      * @return WebElement
      */
-    public WebElement getElement(By element) {
+    public WebElement findElement(By element) {
         return driver.findElement(element);
     }
 
@@ -136,5 +137,16 @@ public class BaseFunctions {
      */
     public List<WebElement> findElements(By element) {
         return driver.findElements(element);
+    }
+
+    /**
+     * Method removes focus from the field
+     *
+     * @param element - element locator to search
+     */
+    public JavascriptExecutor simulateBlurEvent(WebElement element) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].focus(); arguments[0].blur(); return true", element);
+        return js;
     }
 }

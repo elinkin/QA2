@@ -36,6 +36,24 @@ public class MailHelper {
     }
 
     /**
+     * Method marks all cv.lv password reminder messages in folder as Deleted
+     *
+     * @param folder folder to work with
+     * @throws javax.mail.MessagingException
+     */
+    public void cleanupMailbox(String folder) throws javax.mail.MessagingException {
+        Folder inbox = store.getFolder(folder);
+        inbox.open(Folder.READ_WRITE);
+
+        Message[] messages = inbox.getMessages();
+        for (Message message : messages) {
+            if (message.getSubject().equals("CV-Online: paroles atgadinajums")) {
+                message.setFlag(Flags.Flag.DELETED, true);
+            }
+        }
+    }
+
+    /**
      * Method creates mail session
      *
      * @return session
@@ -59,7 +77,7 @@ public class MailHelper {
         return store;
     }
 
-    private String getText(Part part) throws MessagingException, IOException, javax.mail.MessagingException {
+    private String getMailBody(Part part) throws MessagingException, IOException, javax.mail.MessagingException {
         if (part.isMimeType("text/*")) {
             return (String) part.getContent();
         }
@@ -72,21 +90,21 @@ public class MailHelper {
                 Part bp = mp.getBodyPart(i);
                 if (bp.isMimeType("text/plain")) {
                     if (text == null) {
-                        text = getText(bp);
+                        text = getMailBody(bp);
                     }
                 } else if (bp.isMimeType("text/html")) {
-                    String s = getText(bp);
+                    String s = getMailBody(bp);
                     if (s != null)
                         return s;
                 } else {
-                    return getText(bp);
+                    return getMailBody(bp);
                 }
             }
             return text;
         } else if (part.isMimeType("multipart/*")) {
             Multipart mp = (Multipart) part.getContent();
             for (int i = 0; i < mp.getCount(); i++) {
-                String s = getText(mp.getBodyPart(i));
+                String s = getMailBody(mp.getBodyPart(i));
                 if (s != null)
                     return s;
             }
@@ -96,7 +114,7 @@ public class MailHelper {
     }
 
     /**
-     * Method returns last received mail message
+     * Method returns last received password recovery message from cv.lv
      *
      * @param folder folder to look
      * @return message
@@ -106,14 +124,23 @@ public class MailHelper {
     public String getMail(String folder) throws IOException, javax.mail.MessagingException, MessagingException {
         Folder inbox = store.getFolder(folder);
         inbox.open(Folder.READ_ONLY);
-        Pattern pattern = Pattern.compile("(http://www.cv.lv/password/confirm/[a-z0-9]+)");
-        Message[] messages = inbox.getMessages();
-        for (Message message : messages) {
-            String body = getText(message);
-            System.out.println(body);
-            Matcher matcher = pattern.matcher(body);
-            if (matcher.find()) {
-                return matcher.group(1);
+        for (int i = 0; i < 120; i++) {
+            Message[] messages = inbox.getMessages();
+            for (Message message : messages) {
+                if (message.getSubject().equals("CV-Online: paroles atgadinajums")) {
+                    String body = getMailBody(message);
+                    System.out.println(body);
+                    Pattern pattern = Pattern.compile("(http://www.cv.lv/password/confirm/[a-z0-9]+)");
+                    Matcher matcher = pattern.matcher(body);
+                    if (matcher.find()) {
+                        return matcher.group(1);
+                    }
+                }
+            }
+            System.out.println("Waiting for email…");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ignored) {
             }
         }
         return null;
