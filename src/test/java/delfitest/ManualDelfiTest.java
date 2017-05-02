@@ -171,6 +171,7 @@ public class ManualDelfiTest {
         for (final WebElement element : elements) {
             Integer loadedComments;
             Integer totalComments = Integer.valueOf(element.getAttribute("data-quote-count"));
+
             do {
                 final String before = element.getAttribute("data-loaded-comments");
                 new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(element));

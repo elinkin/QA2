@@ -6,6 +6,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -30,7 +31,10 @@ public class BaseFunctions {
         System.setProperty("webdriver.gecko.driver", FIREFOX_DRIVER_LOCATION);
 
         LOGGER.info("Opening Firefox driver");
-        this.driver = new FirefoxDriver();
+        FirefoxProfile profile = new FirefoxProfile();
+        profile.setPreference("security.insecure_field_warning.contextual.enabled", false);
+        profile.setPreference("security.insecure_password.ui.enabled", false);
+        this.driver = new FirefoxDriver(profile);
 
         LOGGER.info("Maximize driver window size");
         driver.manage().window().maximize();
@@ -51,7 +55,7 @@ public class BaseFunctions {
      * @param url web address
      */
     public void goToUrl(String url) {
-        if (!url.contains("http://") && !url.contains("https://")) {
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
             url = "http://" + url;
         }
         LOGGER.info("User goes to: " + url);
