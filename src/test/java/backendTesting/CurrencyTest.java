@@ -17,8 +17,6 @@ public class CurrencyTest {
         LOGGER.info("Get response from server");
         Map<String, Object> response = requester.loadCurrency();
         LOGGER.info("Check response");
-        Map<String, Object> ratesMap = (Map<String, Object>) response.get("rates");
-        ratesMap.forEach((k, v) -> System.out.println("Key = " + k + ", Value = " + v));
-        Assert.assertEquals("Wrong AUD rate: ", Double.valueOf(1.4809), ratesMap.get("AUD"));
+        Assert.assertEquals("Wrong AUD rate: ", Double.valueOf(1.4809), response.get("AUD"));
     }
 }
