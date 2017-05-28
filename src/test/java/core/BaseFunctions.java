@@ -85,6 +85,26 @@ public class BaseFunctions {
     }
 
     /**
+     * This method clears input field and types numbers only
+     *
+     * @param element - text field to fill
+     * @param integer  - text to type in
+     */
+    public void fillNumberInput(By element, Integer integer) {
+        driver.findElement(element).clear();
+        driver.findElement(element).sendKeys(String.valueOf(integer));
+    }
+
+    /**
+     * This method returns the value of the element
+     *
+     * @param element - element locator to search
+     */
+    public String getValue(By element) {
+       return driver.findElement(element).getAttribute("value");
+    }
+
+    /**
      * This method created to pause test - needs to wait for data refresh or receiving mail message
      *
      * @param mills time to wait in milliseconds

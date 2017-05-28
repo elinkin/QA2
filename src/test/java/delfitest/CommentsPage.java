@@ -3,15 +3,6 @@ package delfitest;
 import core.BaseFunctions;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * rus.delfi.lv article page class.
@@ -39,20 +30,20 @@ public class CommentsPage {
         baseFunctions.waitForElement(By.id("comments-list"), 1000);
 
         LOGGER.info("Counting comments on all registered user comments pages");
-        int registered = countAllComments();
-        System.out.println(String.format("Total comment count for registered users is: %d", registered));
+        //int registered = countAllComments();
+       // System.out.println(String.format("Total comment count for registered users is: %d", registered));
 
         LOGGER.info("Opening anonymous comments page");
         baseFunctions.click(By.className("comment-thread-switcher-list-a-anon"));
         baseFunctions.waitForElement(By.className("comment-thread-switcher-selected-anon"), 1000);
 
         LOGGER.info("Counting comments on all anonymous user comments pages");
-        int anonymous = countAllComments();
-        System.out.println(String.format("Total comment count for registered users is: %d", anonymous));
+        //int anonymous = countAllComments();
+        //System.out.println(String.format("Total comment count for registered users is: %d", anonymous));
 
-        int totalManual = registered + anonymous;
-        LOGGER.info("Total comment count for anonymous and registered users is: " + totalManual);
-        assertEquals(total, registered + anonymous);
+        //int totalManual = registered + anonymous;
+        //LOGGER.info("Total comment count for anonymous and registered users is: " + totalManual);
+       // assertEquals(total, registered + anonymous);
     }
 
     /**
@@ -60,7 +51,7 @@ public class CommentsPage {
      *
      * @return - total number of comments
      */
-
+/**
     private int countAllComments() throws InterruptedException {
         int totalComments = 0;
         do {
@@ -70,12 +61,12 @@ public class CommentsPage {
             totalComments += pageComments;
         } while (nextPage());
         return totalComments;
-    }
+    }*/
 
     /**
      * Expands all comments on the page
      */
-
+    /**
     private void expandComments() throws InterruptedException {
         List<WebElement> elements = baseFunctions.findElements(By.className("load-more-comments-btn-link"));
         for (final WebElement element : elements) {
@@ -94,11 +85,11 @@ public class CommentsPage {
             } while (loadedComments < totalComments);
         }
     }
-
+*/
     /**
      * Loads next page of comments until there are no more pages to load
      */
-
+/**
     private boolean nextPage() {
         List<WebElement> elements = baseFunctions.findElements(By.className("comments-pager-arrow-last"));
         if (elements.size() > 0) {
@@ -112,5 +103,5 @@ public class CommentsPage {
             return true;
         }
         return false;
-    }
+    }*/
 }

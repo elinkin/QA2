@@ -1,8 +1,5 @@
 package backendTesting.model;
 
-/**
- * Created by elinkin on 07/05/2017.
- */
 public class Weather {
 
     private long id;

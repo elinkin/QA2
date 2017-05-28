@@ -2,10 +2,12 @@ package delfitest;
 
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -109,43 +111,6 @@ public class ManualDelfiTest {
     }
 
     /**
-     * Opens registered user comments page
-     */
-
-    private void loadRegCommentsPage() {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        wait.until(ExpectedConditions.elementToBeClickable(regUserPage));
-        WebElement element = driver.findElement(regUserPage);
-        element.click();
-    }
-
-    /**
-     * Opens anonymous comments page
-     */
-
-    private void switchToAnonymousComments() {
-        WebElement element = driver.findElement(anonUserPage);
-        element.click();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[contains(@class, 'comment-thread-switcher-selected-anon')]")));
-    }
-
-    /**
-     * Returns number of comments on the page
-     *
-     * @return - number of comments
-     */
-
-    public int countCommentsOnPage() throws InterruptedException {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='comments-listing']/div[3]")));
-        LOGGER.info("Expanding all comments");
-        expandComments();
-
-        return driver.findElements(By.xpath("//div[@class='comment-content-inner']")).size();
-    }
-
-    /**
      * Returns number of comments on all pages per user type
      *
      * @return - total number of comments
@@ -184,26 +149,6 @@ public class ManualDelfiTest {
                 loadedComments = Integer.valueOf(element.getAttribute("data-loaded-comments"));
             } while (loadedComments < totalComments);
         }
-    }
-
-    /**
-     * Waits for the page to load completely
-     */
-
-    private void clickAndWait(By xpath) {
-        WebElement element = driver.findElement(xpath);
-        element.click();
-
-        WebDriverWait wait = new WebDriverWait(driver, 120);
-        // make sure we left current page
-        wait.until(ExpectedConditions.stalenessOf(element));
-        // make sure new page is fully loaded
-        wait.until(new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver webDriver) {
-                return (Boolean) ((JavascriptExecutor) driver).executeScript("return document.readyState == 'complete'");
-            }
-        });
     }
 
     /**
