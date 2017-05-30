@@ -10,6 +10,7 @@ public class ClientPage {
     private static final By ADD_USER = By.xpath("//a[@href='addUser']");
     private static final By ADD_SCORE = By.xpath("(//a[contains(text(),'add score')])[last()]");
     private static final By SCORE = By.xpath("(//div[@class='score'])[last()]");
+    //div/div[last()]/div[@class='score']
 
     public ClientPage(BaseFunctions baseFunctions) {
         this.baseFunctions = baseFunctions;
@@ -33,14 +34,9 @@ public class ClientPage {
      * @return Add Score page
      */
     public AddScorePage clickAddScoreLink() {
-        baseFunctions.waitForElement(SCORE, 500);
+        baseFunctions.waitForElement(SCORE, 1000);
         baseFunctions.click(SCORE);
         LOGGER.info("User clicks Add Score button");
         return new AddScorePage(baseFunctions);
-    }
-
-    public String loadScore() {
-        baseFunctions.waitForElement(SCORE, 500);
-        return baseFunctions.getValue(SCORE);
     }
 }

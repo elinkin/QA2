@@ -45,7 +45,7 @@ public class BaseFunctions {
      */
     public void stopDriver() {
         LOGGER.info("Stopping driver");
-        driver.close();
+        driver.quit();
     }
 
 

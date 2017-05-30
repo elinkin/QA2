@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import userscoring.model.Client;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.util.List;
 public class UserTest {
 
     private static final Logger LOGGER = Logger.getLogger(UserTest.class);
-    private static final String NAME = "2";
+    private static final String NAME = "4";
     private static final String SURNAME = "1";
     private static final String PHONE = "1";
     private static final String EMAIL = "1";
@@ -29,28 +30,51 @@ public class UserTest {
 
         TestBase testBase = new TestBase();
         for (TestBase.TestData testData : testBase.testData) {
-            LOGGER.info("User goes to Add Client page");
+            LOGGER.info("Creating users and adding user score");
             AddClientPage addClientPage = clientPage.clickAddUserLink();
 
-            LOGGER.info("Filling in Add User form fields");
             addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
             addClientPage.clickAddUserButton();
 
-            LOGGER.info("User goes to Add Score page");
             AddScorePage addScorePage = clientPage.clickAddScoreLink();
 
-            LOGGER.info("Filling in Add Score form fields");
             addScorePage.addScore(testData.age, testData.city, testData.country, testData.children);
             addScorePage.clickAddScoreButton();
 
             ClientRequester requester = new ClientRequester();
             List<Client> clients = requester.getClients();
             Client client = clients.get(clients.size() - 1);
-            //Assert.assertTrue("Wrong score", testData.expectedScore == client.getScore());
+            Integer score = client.getScore();
+            LOGGER.info(String.format("Expected score: %d, Actual score: %d", testData.expectedScore, score));
+//            Assert.assertTrue("Wrong score", testData.expectedScore == score);
         }
+    }
 
+    @Test
+    public void emptyFieldsTest() throws IOException {
         LOGGER.info("Check that Add User form fields are initially empty");
-        //Assert.assertEquals("Input field must be empty", "", selenium.getValue("name=model.query"));
+        By NAME = By.xpath("//input[@name='name']");
+        By SURNAME = By.xpath("//input[@name='surname']");
+        By PHONE = By.xpath("//input[@name='phone']");
+        By EMAIL = By.xpath("//input[@name='email']");
+        By ID = By.xpath("//input[@name='personId']");
+
+        baseFunctions.goToUrl(CLIENT_LIST_URL);
+        ClientPage clientPage = new ClientPage(baseFunctions);
+        AddClientPage addClientPage = clientPage.clickAddUserLink();
+
+        baseFunctions.waitForElement(NAME, 500);
+        baseFunctions.waitForElement(SURNAME, 500);
+        baseFunctions.waitForElement(PHONE, 500);
+        baseFunctions.waitForElement(EMAIL, 500);
+        baseFunctions.waitForElement(ID, 500);
+
+        Assert.assertTrue("Name field not empty", baseFunctions.getValue(NAME).isEmpty());
+        Assert.assertTrue("Surname field not empty", baseFunctions.getValue(SURNAME).isEmpty());
+        Assert.assertTrue("Phone field not empty", baseFunctions.getValue(PHONE).isEmpty());
+        Assert.assertTrue("Email field not empty", baseFunctions.getValue(EMAIL).isEmpty());
+        Assert.assertTrue("ID field not empty", baseFunctions.getValue(ID).isEmpty());
+
 
         LOGGER.info("Check that user is not created if one or more fields are empty, check for error message");
         LOGGER.info("Check for user is not created if one or more fields contain breakspace, check for error message");
