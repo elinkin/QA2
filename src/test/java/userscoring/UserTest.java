@@ -41,9 +41,7 @@ public class UserTest {
 
         TestBase testBase = new TestBase();
         testBase.toTest();
-        for (TestBase.TestData rec : testBase.) {
-
-        }
+        //for (TestBase.TestData rec : ) {
 
         LOGGER.info("User goes to Add Client page");
         AddClientPage addClientPage = clientPage.clickAddUserLink();
