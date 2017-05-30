@@ -8,30 +8,18 @@ import org.junit.Test;
 import userscoring.model.Client;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 
 public class UserTest {
 
     private static final Logger LOGGER = Logger.getLogger(UserTest.class);
-    private static final String NAME = "1";
+    private static final String NAME = "2";
     private static final String SURNAME = "1";
     private static final String PHONE = "1";
     private static final String EMAIL = "1";
     private static final String ID = "111111-11111";
-    private static final Integer AGE = 18;
-    private static final String CITY = "Riga";
-    private static final String COUNTRY = "Latvia";
-    private static final Integer CHILDREN = 0;
     private static final String CLIENT_LIST_URL = "qaguru.lv:8080/qa2/";
     private static BaseFunctions baseFunctions = new BaseFunctions();
-
-    @Test
-    public void testArray() {
-        TestBase testBase = new TestBase();
-        testBase.toTest();
-    }
-
 
     @Test
     public void userScoreTest() throws IOException {
@@ -40,31 +28,26 @@ public class UserTest {
         ClientPage clientPage = new ClientPage(baseFunctions);
 
         TestBase testBase = new TestBase();
-        testBase.toTest();
-        //for (TestBase.TestData rec : ) {
+        for (TestBase.TestData testData : testBase.testData) {
+            LOGGER.info("User goes to Add Client page");
+            AddClientPage addClientPage = clientPage.clickAddUserLink();
 
-        LOGGER.info("User goes to Add Client page");
-        AddClientPage addClientPage = clientPage.clickAddUserLink();
+            LOGGER.info("Filling in Add User form fields");
+            addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
+            addClientPage.clickAddUserButton();
 
-        LOGGER.info("Filling in Add User form fields");
-        addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
-        addClientPage.clickAddUserButton();
+            LOGGER.info("User goes to Add Score page");
+            AddScorePage addScorePage = clientPage.clickAddScoreLink();
 
-        LOGGER.info("User goes to Add Score page");
-        AddScorePage addScorePage = clientPage.clickAddScoreLink();
+            LOGGER.info("Filling in Add Score form fields");
+            addScorePage.addScore(testData.age, testData.city, testData.country, testData.children);
+            addScorePage.clickAddScoreButton();
 
-        LOGGER.info("Filling in Add Score form fields");
-        addScorePage.addScore(AGE, CITY, COUNTRY, CHILDREN);
-        addScorePage.clickAddScoreButton();
-
-        ClientRequester requester = new ClientRequester();
-        List<Client> clients = requester.getClients();
-        Client client = clients.get(clients.size() - 1);
-        Assert.assertEquals("Wrong score: ", BigDecimal.valueOf(700), client.getScore());
-
-        String[][] clientdata = {{"Test1", "Test1", "+371111111", "test1@gmail.com", "111111-11111"}, {"Test2", "Test2", "+371222222", "test2@gmail.com", "222222-22222"},
-                {"Test3", "Test3", "+371333333", "test3@gmail.com", "333333-33333"}, {"Test4", "Test4", "+371444444", "test4@gmail.com", "444444-44444"},
-                {"Test5", "Test5", "+371555555", "test5@gmail.com", "5555555-55555"}, {"Test6", "Test6", "+371666666", "test6@gmail.com", "666666-66666"}};
+            ClientRequester requester = new ClientRequester();
+            List<Client> clients = requester.getClients();
+            Client client = clients.get(clients.size() - 1);
+            //Assert.assertTrue("Wrong score", testData.expectedScore == client.getScore());
+        }
 
         LOGGER.info("Check that Add User form fields are initially empty");
         //Assert.assertEquals("Input field must be empty", "", selenium.getValue("name=model.query"));

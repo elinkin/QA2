@@ -1,6 +1,23 @@
 package userscoring;
 
 public class TestBase {
+    TestData[] testData;
+
+    public TestBase() {
+        testData = new TestData[]{
+                new TestData(18, "Riga", "Latvia", 0),
+                new TestData(22, "Liepaja", "Latvia", 2),
+                new TestData(23, "Riga", "Latvia", 0),
+                new TestData(35, "Valmiera", "Latvia", 2),
+                new TestData(36, "Riga", "Latvia", 0),
+                new TestData(50, "Daugavpils", "Latvia", 2),
+                new TestData(51, "Riga", "Latvia", 2),
+                new TestData(60, "Liepaja", "Latvia", 4),
+                new TestData(61, "Riga", "Latvia", 2),
+                new TestData(75, "Valmiera", "Latvia", 4),
+        };
+    }
+
     class TestData {
         int age;
         String city;
@@ -13,9 +30,10 @@ public class TestBase {
             this.city = city;
             this.country = country;
             this.children = children;
+            this.expectedScore = calculateExpectedScore();
         }
 
-        public int calculateExpectedScore() {
+        private int calculateExpectedScore() {
             int ageScore;
             int cityScore;
             int countryScore;
@@ -36,7 +54,7 @@ public class TestBase {
             } else
                 cityScore = 100;
 
-            if(country.equals("Latvia")) {
+            if (country.equals("Latvia")) {
                 countryScore = 300;
             } else
                 countryScore = 100;
@@ -49,26 +67,7 @@ public class TestBase {
                 childScore = 100;
 
             expectedScore = ageScore + cityScore + countryScore + childScore;
-                return expectedScore;
-            }
-        }
-
-    public void toTest() {
-        TestData[] testData = {
-                new TestData(18, "Riga", "Latvia", 0),
-                new TestData(22, "Liepaja", "Latvia", 2),
-                new TestData(23, "Riga", "Latvia", 0),
-                new TestData(35, "Valmiera", "Latvia", 2),
-                new TestData(36, "Riga", "Latvia", 0),
-                new TestData(50, "Daugavpils", "Latvia", 2),
-                new TestData(51, "Riga", "Latvia", 2),
-                new TestData(60, "Liepaja", "Latvia", 4),
-                new TestData(61, "Riga", "Latvia", 2),
-                new TestData(75, "Valmiera", "Latvia", 4),
-        };
-
-        for (TestData rec : testData) {
-            System.out.println(String.format("age: %d, city: %s, country: %s, children: %d, expected: %d", rec.age, rec.city, rec.country, rec.children, rec.calculateExpectedScore()));
+            return expectedScore;
         }
     }
 }
