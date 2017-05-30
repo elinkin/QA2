@@ -33,6 +33,7 @@ public class ClientPage {
      * @return Add Score page
      */
     public AddScorePage clickAddScoreLink() {
+        baseFunctions.waitForElement(SCORE, 500);
         baseFunctions.click(SCORE);
         LOGGER.info("User clicks Add Score button");
         return new AddScorePage(baseFunctions);

@@ -1,7 +1,5 @@
 package userscoring.model;
 
-import java.math.BigDecimal;
-
 public class Client {
     private Integer id;
     private String name;
@@ -10,7 +8,7 @@ public class Client {
     private String email;
     private String gender;
     private String personId;
-    private BigDecimal score;
+    private Integer score;
 
     public Integer getId() {
         return id;
@@ -68,11 +66,11 @@ public class Client {
         this.personId = personId;
     }
 
-    public BigDecimal getScore() {
+    public Integer getScore() {
         return score;
     }
 
-    public void setScore(BigDecimal score) {
+    public void setScore(Integer score) {
         this.score = score;
     }
 }
