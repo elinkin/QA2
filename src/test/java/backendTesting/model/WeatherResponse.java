@@ -4,9 +4,6 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.util.List;
 
-/**
- * Created by elinkin on 07/05/2017.
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 public class WeatherResponse {

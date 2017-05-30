@@ -2,7 +2,7 @@ package userscoring;
 
 import core.BaseFunctions;
 import org.apache.log4j.Logger;
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import userscoring.model.Client;
@@ -24,13 +24,26 @@ public class UserTest {
     private static final String COUNTRY = "Latvia";
     private static final Integer CHILDREN = 0;
     private static final String CLIENT_LIST_URL = "qaguru.lv:8080/qa2/";
-    private BaseFunctions baseFunctions = new BaseFunctions();
+    private static BaseFunctions baseFunctions = new BaseFunctions();
 
     @Test
-    public void userTest() throws IOException {
+    public void testArray() {
+        TestBase testBase = new TestBase();
+        testBase.toTest();
+    }
+
+
+    @Test
+    public void userScoreTest() throws IOException {
 
         baseFunctions.goToUrl(CLIENT_LIST_URL);
         ClientPage clientPage = new ClientPage(baseFunctions);
+
+        TestBase testBase = new TestBase();
+        testBase.toTest();
+        for (TestBase.TestData rec : testBase.) {
+
+        }
 
         LOGGER.info("User goes to Add Client page");
         AddClientPage addClientPage = clientPage.clickAddUserLink();
@@ -52,7 +65,7 @@ public class UserTest {
         Assert.assertEquals("Wrong score: ", BigDecimal.valueOf(700), client.getScore());
 
         String[][] clientdata = {{"Test1", "Test1", "+371111111", "test1@gmail.com", "111111-11111"}, {"Test2", "Test2", "+371222222", "test2@gmail.com", "222222-22222"},
-                {"Test3", "Test3", "+371333333", "test3@gmail.com", "333333-33333"}, {"Test4", "Test4", "+371444444", "test4@gmail.com", "444444-44444"} ,
+                {"Test3", "Test3", "+371333333", "test3@gmail.com", "333333-33333"}, {"Test4", "Test4", "+371444444", "test4@gmail.com", "444444-44444"},
                 {"Test5", "Test5", "+371555555", "test5@gmail.com", "5555555-55555"}, {"Test6", "Test6", "+371666666", "test6@gmail.com", "666666-66666"}};
 
         LOGGER.info("Check that Add User form fields are initially empty");
@@ -79,15 +92,14 @@ public class UserTest {
 
         LOGGER.info("Check that score is added when all fields are filled correctly");
         LOGGER.info("Check that score was calculated correctly (based on spec)");
-        //Assert.assertEquals("700", clientPage.loadScore());
 
     }
 
     /**
      * Stopping webDriver
      */
-    @After
-    public void closeDriver() {
+    @AfterClass
+    public static void closeDriver() {
         baseFunctions.stopDriver();
     }
 }
