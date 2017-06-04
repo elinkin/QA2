@@ -10,7 +10,6 @@ public class ClientPage {
     private static final By ADD_USER = By.xpath("//a[@href='addUser']");
     private static final By ADD_SCORE = By.xpath("(//a[contains(text(),'add score')])[last()]");
     private static final By SCORE = By.xpath("(//div[@class='score'])[last()]");
-    //div/div[last()]/div[@class='score']
 
     public ClientPage(BaseFunctions baseFunctions) {
         this.baseFunctions = baseFunctions;

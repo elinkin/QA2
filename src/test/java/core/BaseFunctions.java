@@ -85,6 +85,18 @@ public class BaseFunctions {
     }
 
     /**
+     * This method clears input field and types text
+     *
+     * @param element - text field to fill
+     * @param text    - text to type in
+     */
+    public void fillInputAndSubmit(By element, String text) {
+        driver.findElement(element).clear();
+        driver.findElement(element).sendKeys(text);
+        driver.findElement(element).submit();
+    }
+
+    /**
      * This method clears input field and types numbers only
      *
      * @param element - text field to fill
@@ -172,5 +184,9 @@ public class BaseFunctions {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].focus(); arguments[0].blur(); return true", element);
         return js;
+    }
+
+    public WebDriver getDriver() {
+        return driver;
     }
 }
