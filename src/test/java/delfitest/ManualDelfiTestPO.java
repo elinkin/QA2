@@ -30,9 +30,11 @@ public class ManualDelfiTestPO {
 
             CommentsPage commentsPage = archivePage.openArticle(article);
 
-            int numberOfArticlesFromHeader = commentsPage.getNumberOfCommentsFromHeader();
+            int numberOfCommentsFromHeader = commentsPage.getNumberOfCommentsFromHeader();
+            System.out.println(String.format("Total number of comments: %d", numberOfCommentsFromHeader));
             int calculatedNumberOfComments = commentsPage.calculateNumberOfComments();
-            Assert.assertEquals("blah", numberOfArticlesFromHeader, calculatedNumberOfComments);
+            System.out.println(String.format("Total number of comments: %d", calculatedNumberOfComments));
+            Assert.assertEquals("Wrong comment count", numberOfCommentsFromHeader, calculatedNumberOfComments);
         }
     }
 

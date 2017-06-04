@@ -17,12 +17,12 @@ public class ArchivePage {
         LOGGER.info("Archive page is loaded");
     }
 
-    public CommentsPage openArticle(String article) {
+    public CommentsPage openArticle(String article) throws InterruptedException {
         baseFunctions.fillInputAndSubmit(SEARCH_FIELD, article);
         baseFunctions.click(SEARCH_FIELD);
-
         LOGGER.info("We are opening article " + article);
         baseFunctions.click(By.partialLinkText(article));
+        Thread.sleep(3000);
         return new CommentsPage(baseFunctions);
     }
 }

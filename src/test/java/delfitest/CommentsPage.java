@@ -23,12 +23,11 @@ public class CommentsPage {
         LOGGER.info("Article page opened");
     }
 
-    public int getNumberOfCommentsFromHeader() {
+    public int getNumberOfCommentsFromHeader() throws InterruptedException {
         LOGGER.info("Getting total number of comments from the article page");
-        String text = baseFunctions.findElements(By.className("comment-count")).get(0).getText().replaceAll("[^0-9]", "");
+        String text1 = baseFunctions.findElements(By.className("comment-count")).get(0).getText();
+        String text = text1.replaceAll("[^0-9]", "");
         return Integer.parseInt(text);
-       // int total = Integer.parseInt(text);
-        //System.out.println(String.format("Total number of comments: ", total));
     }
 
     public int calculateNumberOfComments() throws InterruptedException {
@@ -49,7 +48,6 @@ public class CommentsPage {
         int anonymous = countAllComments();
         System.out.println(String.format("Total comment count for registered users is: %d", anonymous));
 
-        LOGGER.info("Total comment count for anonymous and registered users is: " + registered + anonymous);
         return registered + anonymous;
     }
 
