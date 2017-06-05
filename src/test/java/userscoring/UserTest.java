@@ -26,6 +26,10 @@ public class UserTest {
     private static final By PHONE_ERROR_TXT = By.xpath("//div[contains(text(), 'Phone is not valid')]");
     private static final By EMAIL_ERROR_TXT = By.xpath("//div[contains(text(), 'Email is not valid')]");
     private static final By ID_ERROR_TXT = By.xpath("//div[contains(text(), 'ID is not valid')]");
+    private static final By AGE_ERROR_TXT = By.xpath("//div[contains(text(), 'Age is not valid')]");
+    private static final By CHILDREN_ERROR_TXT = By.xpath("//div[contains(text(), 'Number of children is not valid')]");
+    private static final By CITY_ERROR_TXT = By.xpath("//div[contains(text(), 'City is not valid')]");
+    private static final By COUNTRY_ERROR_TXT = By.xpath("//div[contains(text(), 'Country is not valid')]");
     private static BaseFunctions baseFunctions = new BaseFunctions();
 
     @Test
@@ -122,7 +126,6 @@ public class UserTest {
         baseFunctions.fillInput(ID, IDTEXT);
         addClientPage.clickAddUserButton();
 
-        //baseFunctions.waitForElement(ERROR_TXT, 500);
         Thread.sleep(1000);
 
         Assert.assertTrue("No validation for empty fields", baseFunctions.isPresentElement(NAME));
@@ -154,7 +157,7 @@ public class UserTest {
     }
 
     @Test
-    public void phoneTest() throws InterruptedException {
+    public void phoneValidationTest() throws InterruptedException {
         String PHONETEXT = "1";
         By PHONE = By.xpath("//input[@name='phone']");
 
@@ -176,7 +179,7 @@ public class UserTest {
     }
 
     @Test
-    public void emailTest() throws InterruptedException {
+    public void emailValidationTest() throws InterruptedException {
         String EMAILTEXT = "test";
         By EMAIL = By.xpath("//input[@name='email']");
 
@@ -198,7 +201,12 @@ public class UserTest {
     }
 
     @Test
-    public void idTest() throws InterruptedException {
+    public void genderValidationTest() throws InterruptedException {
+        LOGGER.info("Check that gender selection drop-down works (it is possible to select different options)");
+    }
+
+    @Test
+    public void idValidationTest() throws InterruptedException {
         String IDTEXT = "1";
         By ID = By.xpath("//input[@name='personId']");
 
@@ -278,26 +286,333 @@ public class UserTest {
         ClientPage clientPage = new ClientPage(baseFunctions);
         AddClientPage addClientPage = clientPage.clickAddUserLink();
 
+        addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
+        addClientPage.clickAddUserButton();
+
+        AddScorePage addScorePage = clientPage.clickAddScoreLink();
+
         baseFunctions.waitForElement(CHILDREN, 500);
 
-        Assert.assertTrue("Name field not empty", baseFunctions.getValue(AGE).isEmpty());
-        Assert.assertTrue("Surname field not empty", baseFunctions.getValue(CITY).isEmpty());
-        Assert.assertTrue("Phone field not empty", baseFunctions.getValue(COUNTRY).isEmpty());
-        Assert.assertTrue("Email field not empty", baseFunctions.getValue(CHILDREN).isEmpty());
+        Assert.assertTrue("Age field not empty", baseFunctions.getValue(AGE).isEmpty());
+        Assert.assertTrue("City field not empty", baseFunctions.getValue(CITY).isEmpty());
+        Assert.assertTrue("Country field not empty", baseFunctions.getValue(COUNTRY).isEmpty());
+        Assert.assertTrue("Children field not empty", baseFunctions.getValue(CHILDREN).isEmpty());
     }
 
     @Test
-    public void scoreLengthTest() throws InterruptedException {
+    public void emptyScoreFieldsTest() throws InterruptedException {
+        By AGE = By.xpath("//input[@name='age']");
 
-        LOGGER.info("Check that gender selection drop-down works (it is possible to select different options)");
+        LOGGER.info("Verifying that score is not calculated if one or more fields are empty");
 
-        LOGGER.info("Check that Add score form fields are initially empty");
-        LOGGER.info("Check that score cannot be added if one or more fields are empty");
-        LOGGER.info("Check for user is not created if one or more fields contain breakspace, check for error message");
-        LOGGER.info("Check that user is not created if age is <18 or >75");
-        LOGGER.info("Check that it is not possible to add a score if age/number of children is not a number");
-        LOGGER.info("Check that it is not possible to add a score if number of children is <0");
-        LOGGER.info("Check that it is not possible to add a score if city/country fields contain numbers/special characters");
+        baseFunctions.goToUrl(CLIENT_LIST_URL);
+        ClientPage clientPage = new ClientPage(baseFunctions);
+        AddClientPage addClientPage = clientPage.clickAddUserLink();
+
+        addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
+        addClientPage.clickAddUserButton();
+
+        AddScorePage addScorePage = clientPage.clickAddScoreLink();
+        addScorePage.clickAddScoreButton();
+
+        Thread.sleep(1000);
+
+        Assert.assertTrue("No validation for empty fields", baseFunctions.isPresentElement(AGE));
+        Assert.assertTrue("No error message", baseFunctions.isPresentElement(EMPTY_ERROR_TXT));
+    }
+
+    @Test
+    public void scoreWhitespaceTest() throws InterruptedException {
+        String AGETEXT = " ";
+        String CITYTEXT = " ";
+        String COUNTRYTEXT = " ";
+        String CHILDRENTEXT = " ";
+        By AGE = By.xpath("//input[@name='age']");
+        By CITY = By.xpath("//input[@name='city']");
+        By COUNTRY = By.xpath("//input[@name='country']");
+        By CHILDREN = By.xpath("//input[@name='childCount']");
+
+        LOGGER.info("Verifying that score is not calculated if one or more fields are filled with white space");
+
+        baseFunctions.goToUrl(CLIENT_LIST_URL);
+        ClientPage clientPage = new ClientPage(baseFunctions);
+        AddClientPage addClientPage = clientPage.clickAddUserLink();
+
+        addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
+        addClientPage.clickAddUserButton();
+
+        AddScorePage addScorePage = clientPage.clickAddScoreLink();
+
+        baseFunctions.waitForElement(CHILDREN, 500);
+        baseFunctions.fillInput(AGE, AGETEXT);
+        baseFunctions.fillInput(CITY, CITYTEXT);
+        baseFunctions.fillInput(COUNTRY, COUNTRYTEXT);
+        baseFunctions.fillInput(CHILDREN, CHILDRENTEXT);
+        addScorePage.clickAddScoreButton();
+
+        Thread.sleep(1000);
+
+        Assert.assertTrue("No validation for empty fields", baseFunctions.isPresentElement(AGE));
+        Assert.assertTrue("No error message", baseFunctions.isPresentElement(EMPTY_ERROR_TXT));
+    }
+
+    @Test
+    public void scoreTooYoungTest() throws InterruptedException {
+        int AGETEXT = 17;
+        String CITYTEXT = "Riga";
+        String COUNTRYTEXT = "Latvia";
+        int CHILDRENTEXT = 0;
+        By AGE = By.xpath("//input[@name='age']");
+        By CITY = By.xpath("//input[@name='city']");
+        By COUNTRY = By.xpath("//input[@name='country']");
+        By CHILDREN = By.xpath("//input[@name='childCount']");
+
+
+        LOGGER.info("Verifying that user is not created if age is <18");
+
+        baseFunctions.goToUrl(CLIENT_LIST_URL);
+        ClientPage clientPage = new ClientPage(baseFunctions);
+        AddClientPage addClientPage = clientPage.clickAddUserLink();
+
+        addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
+        addClientPage.clickAddUserButton();
+
+        AddScorePage addScorePage = clientPage.clickAddScoreLink();
+
+        baseFunctions.waitForElement(CHILDREN, 500);
+
+        baseFunctions.fillNumberInput(AGE, AGETEXT);
+        baseFunctions.fillInput(CITY, CITYTEXT);
+        baseFunctions.fillInput(COUNTRY, COUNTRYTEXT);
+        baseFunctions.fillNumberInput(CHILDREN, CHILDRENTEXT);
+        addScorePage.clickAddScoreButton();
+
+        Thread.sleep(1000);
+
+        Assert.assertTrue("No validation for age field", baseFunctions.isPresentElement(AGE));
+        Assert.assertTrue("No error message", baseFunctions.isPresentElement(AGE_ERROR_TXT));
+    }
+
+    @Test
+    public void scoreTooOldTest() throws InterruptedException {
+        int AGETEXT = 76;
+        String CITYTEXT = "Riga";
+        String COUNTRYTEXT = "Latvia";
+        int CHILDRENTEXT = 0;
+        By AGE = By.xpath("//input[@name='age']");
+        By CITY = By.xpath("//input[@name='city']");
+        By COUNTRY = By.xpath("//input[@name='country']");
+        By CHILDREN = By.xpath("//input[@name='childCount']");
+
+
+        LOGGER.info("Verifying that user is not created if age is >75");
+
+        baseFunctions.goToUrl(CLIENT_LIST_URL);
+        ClientPage clientPage = new ClientPage(baseFunctions);
+        AddClientPage addClientPage = clientPage.clickAddUserLink();
+
+        addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
+        addClientPage.clickAddUserButton();
+
+        AddScorePage addScorePage = clientPage.clickAddScoreLink();
+
+        baseFunctions.waitForElement(CHILDREN, 500);
+
+        baseFunctions.fillNumberInput(AGE, AGETEXT);
+        baseFunctions.fillInput(CITY, CITYTEXT);
+        baseFunctions.fillInput(COUNTRY, COUNTRYTEXT);
+        baseFunctions.fillNumberInput(CHILDREN, CHILDRENTEXT);
+        addScorePage.clickAddScoreButton();
+
+        Thread.sleep(1000);
+
+        Assert.assertTrue("No validation for age field", baseFunctions.isPresentElement(AGE));
+        Assert.assertTrue("No error message", baseFunctions.isPresentElement(AGE_ERROR_TXT));
+    }
+
+    @Test
+    public void ageValidationTest() throws InterruptedException {
+        String AGETEXT = "test";
+        String CITYTEXT = "Riga";
+        String COUNTRYTEXT = "Latvia";
+        int CHILDRENTEXT = 0;
+        By AGE = By.xpath("//input[@name='age']");
+        By CITY = By.xpath("//input[@name='city']");
+        By COUNTRY = By.xpath("//input[@name='country']");
+        By CHILDREN = By.xpath("//input[@name='childCount']");
+
+
+        LOGGER.info("Verifying that it is not possible to add a score if age is not a number");
+
+        baseFunctions.goToUrl(CLIENT_LIST_URL);
+        ClientPage clientPage = new ClientPage(baseFunctions);
+        AddClientPage addClientPage = clientPage.clickAddUserLink();
+
+        addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
+        addClientPage.clickAddUserButton();
+
+        AddScorePage addScorePage = clientPage.clickAddScoreLink();
+
+        baseFunctions.waitForElement(CHILDREN, 500);
+
+        baseFunctions.fillInput(AGE, AGETEXT);
+        baseFunctions.fillInput(CITY, CITYTEXT);
+        baseFunctions.fillInput(COUNTRY, COUNTRYTEXT);
+        baseFunctions.fillNumberInput(CHILDREN, CHILDRENTEXT);
+        addScorePage.clickAddScoreButton();
+
+        Thread.sleep(1000);
+
+        Assert.assertTrue("No validation for age field", baseFunctions.isPresentElement(AGE));
+        Assert.assertTrue("No error message", baseFunctions.isPresentElement(AGE_ERROR_TXT));
+    }
+
+    @Test
+    public void childrenValidationTest() throws InterruptedException {
+        int AGETEXT = 18;
+        String CITYTEXT = "Riga";
+        String COUNTRYTEXT = "Latvia";
+        String CHILDRENTEXT = "test";
+        By AGE = By.xpath("//input[@name='age']");
+        By CITY = By.xpath("//input[@name='city']");
+        By COUNTRY = By.xpath("//input[@name='country']");
+        By CHILDREN = By.xpath("//input[@name='childCount']");
+
+
+        LOGGER.info("Verifying that it is not possible to add a score if number of children is not a number");
+
+        baseFunctions.goToUrl(CLIENT_LIST_URL);
+        ClientPage clientPage = new ClientPage(baseFunctions);
+        AddClientPage addClientPage = clientPage.clickAddUserLink();
+
+        addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
+        addClientPage.clickAddUserButton();
+
+        AddScorePage addScorePage = clientPage.clickAddScoreLink();
+
+        baseFunctions.waitForElement(CHILDREN, 500);
+
+        baseFunctions.fillNumberInput(AGE, AGETEXT);
+        baseFunctions.fillInput(CITY, CITYTEXT);
+        baseFunctions.fillInput(COUNTRY, COUNTRYTEXT);
+        baseFunctions.fillInput(CHILDREN, CHILDRENTEXT);
+        addScorePage.clickAddScoreButton();
+
+        Thread.sleep(1000);
+
+        Assert.assertTrue("No validation for children field", baseFunctions.isPresentElement(CHILDREN));
+        Assert.assertTrue("No error message", baseFunctions.isPresentElement(CHILDREN_ERROR_TXT));
+    }
+
+    @Test
+    public void childrenNegativeValidationTest() throws InterruptedException {
+        int AGETEXT = 18;
+        String CITYTEXT = "Riga";
+        String COUNTRYTEXT = "Latvia";
+        int CHILDRENTEXT = -1;
+        By AGE = By.xpath("//input[@name='age']");
+        By CITY = By.xpath("//input[@name='city']");
+        By COUNTRY = By.xpath("//input[@name='country']");
+        By CHILDREN = By.xpath("//input[@name='childCount']");
+
+
+        LOGGER.info("Verifying that it is not possible to add a score if city field contains numbers/special characters");
+
+        baseFunctions.goToUrl(CLIENT_LIST_URL);
+        ClientPage clientPage = new ClientPage(baseFunctions);
+        AddClientPage addClientPage = clientPage.clickAddUserLink();
+
+        addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
+        addClientPage.clickAddUserButton();
+
+        AddScorePage addScorePage = clientPage.clickAddScoreLink();
+
+        baseFunctions.waitForElement(CHILDREN, 500);
+
+        baseFunctions.fillNumberInput(AGE, AGETEXT);
+        baseFunctions.fillInput(CITY, CITYTEXT);
+        baseFunctions.fillInput(COUNTRY, COUNTRYTEXT);
+        baseFunctions.fillNumberInput(CHILDREN, CHILDRENTEXT);
+        addScorePage.clickAddScoreButton();
+
+        Thread.sleep(1000);
+
+        Assert.assertTrue("No validation for children field", baseFunctions.isPresentElement(CHILDREN));
+        Assert.assertTrue("No error message", baseFunctions.isPresentElement(CHILDREN_ERROR_TXT));
+    }
+
+    @Test
+    public void cityValidationTest() throws InterruptedException {
+        int AGETEXT = 18;
+        int CITYTEXT = 18;
+        String COUNTRYTEXT = "Latvia";
+        int CHILDRENTEXT = 0;
+        By AGE = By.xpath("//input[@name='age']");
+        By CITY = By.xpath("//input[@name='city']");
+        By COUNTRY = By.xpath("//input[@name='country']");
+        By CHILDREN = By.xpath("//input[@name='childCount']");
+
+
+        LOGGER.info("Verifying that it is not possible to add a score if country field contains numbers/special characters");
+
+        baseFunctions.goToUrl(CLIENT_LIST_URL);
+        ClientPage clientPage = new ClientPage(baseFunctions);
+        AddClientPage addClientPage = clientPage.clickAddUserLink();
+
+        addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
+        addClientPage.clickAddUserButton();
+
+        AddScorePage addScorePage = clientPage.clickAddScoreLink();
+
+        baseFunctions.waitForElement(CHILDREN, 500);
+
+        baseFunctions.fillNumberInput(AGE, AGETEXT);
+        baseFunctions.fillNumberInput(CITY, CITYTEXT);
+        baseFunctions.fillInput(COUNTRY, COUNTRYTEXT);
+        baseFunctions.fillNumberInput(CHILDREN, CHILDRENTEXT);
+        addScorePage.clickAddScoreButton();
+
+        Thread.sleep(1000);
+
+        Assert.assertTrue("No validation for city field", baseFunctions.isPresentElement(CHILDREN));
+        Assert.assertTrue("No error message", baseFunctions.isPresentElement(CITY_ERROR_TXT));
+    }
+
+    @Test
+    public void countryValidationTest() throws InterruptedException {
+        int AGETEXT = 18;
+        String CITYTEXT = "Riga";
+        int COUNTRYTEXT = 18;
+        int CHILDRENTEXT = 0;
+        By AGE = By.xpath("//input[@name='age']");
+        By CITY = By.xpath("//input[@name='city']");
+        By COUNTRY = By.xpath("//input[@name='country']");
+        By CHILDREN = By.xpath("//input[@name='childCount']");
+
+
+        LOGGER.info("Verifying that it is not possible to add a score if number of children is not a number");
+
+        baseFunctions.goToUrl(CLIENT_LIST_URL);
+        ClientPage clientPage = new ClientPage(baseFunctions);
+        AddClientPage addClientPage = clientPage.clickAddUserLink();
+
+        addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
+        addClientPage.clickAddUserButton();
+
+        AddScorePage addScorePage = clientPage.clickAddScoreLink();
+
+        baseFunctions.waitForElement(CHILDREN, 500);
+
+        baseFunctions.fillNumberInput(AGE, AGETEXT);
+        baseFunctions.fillNumberInput(CITY, CITYTEXT);
+        baseFunctions.fillInput(COUNTRY, COUNTRYTEXT);
+        baseFunctions.fillNumberInput(CHILDREN, CHILDRENTEXT);
+        addScorePage.clickAddScoreButton();
+
+        Thread.sleep(1000);
+
+        Assert.assertTrue("No validation for city field", baseFunctions.isPresentElement(COUNTRY));
+        Assert.assertTrue("No error message", baseFunctions.isPresentElement(COUNTRY_ERROR_TXT));
     }
 
     /**
