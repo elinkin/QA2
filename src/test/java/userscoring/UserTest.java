@@ -30,6 +30,8 @@ public class UserTest {
     private static final By CHILDREN_ERROR_TXT = By.xpath("//div[contains(text(), 'Number of children is not valid')]");
     private static final By CITY_ERROR_TXT = By.xpath("//div[contains(text(), 'City is not valid')]");
     private static final By COUNTRY_ERROR_TXT = By.xpath("//div[contains(text(), 'Country is not valid')]");
+    private static final By GENDER_COMBO_BOX = By.xpath("//select[@name='gender']");
+    private static final By GENDER = By.xpath("(//div[@class='gender'])[last()]");
     private static BaseFunctions baseFunctions = new BaseFunctions();
 
     @Test
@@ -203,6 +205,21 @@ public class UserTest {
     @Test
     public void genderValidationTest() throws InterruptedException {
         LOGGER.info("Check that gender selection drop-down works (it is possible to select different options)");
+
+        baseFunctions.goToUrl(CLIENT_LIST_URL);
+
+        ClientPage clientPage = new ClientPage(baseFunctions);
+        AddClientPage addClientPage = clientPage.clickAddUserLink();
+
+        baseFunctions.waitForElement(GENDER_COMBO_BOX, 500);
+        baseFunctions.selectComboBoxByValue(GENDER_COMBO_BOX,"female");
+        addClientPage.addUser(NAME, SURNAME, PHONE, EMAIL, ID);
+        addClientPage.clickAddUserButton();
+
+        Thread.sleep(1000);
+
+        Assert.assertEquals("Incorrect gender", "female", baseFunctions.getText(GENDER));
+
     }
 
     @Test
@@ -604,14 +621,14 @@ public class UserTest {
         baseFunctions.waitForElement(CHILDREN, 500);
 
         baseFunctions.fillNumberInput(AGE, AGETEXT);
-        baseFunctions.fillNumberInput(CITY, CITYTEXT);
-        baseFunctions.fillInput(COUNTRY, COUNTRYTEXT);
+        baseFunctions.fillInput(CITY, CITYTEXT);
+        baseFunctions.fillNumberInput(COUNTRY, COUNTRYTEXT);
         baseFunctions.fillNumberInput(CHILDREN, CHILDRENTEXT);
         addScorePage.clickAddScoreButton();
 
         Thread.sleep(1000);
 
-        Assert.assertTrue("No validation for city field", baseFunctions.isPresentElement(COUNTRY));
+        Assert.assertTrue("No validation for country field", baseFunctions.isPresentElement(COUNTRY));
         Assert.assertTrue("No error message", baseFunctions.isPresentElement(COUNTRY_ERROR_TXT));
     }
 

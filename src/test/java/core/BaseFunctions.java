@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
@@ -100,7 +101,7 @@ public class BaseFunctions {
      * This method clears input field and types numbers only
      *
      * @param element - text field to fill
-     * @param integer  - text to type in
+     * @param integer - text to type in
      */
     public void fillNumberInput(By element, Integer integer) {
         driver.findElement(element).clear();
@@ -113,7 +114,16 @@ public class BaseFunctions {
      * @param element - element locator to search
      */
     public String getValue(By element) {
-       return driver.findElement(element).getAttribute("value");
+        return driver.findElement(element).getAttribute("value");
+    }
+
+    /**
+     * This method returns the text of the element
+     *
+     * @param element - element locator to search
+     */
+    public String getText(By element) {
+        return driver.findElement(element).getText();
     }
 
     /**
@@ -176,6 +186,20 @@ public class BaseFunctions {
     }
 
     /**
+     * Method selects combo box with a specific value
+     *
+     * @param element - element locator to search
+     */
+    public void selectComboBoxByValue(By selector, String value) {
+        WebElement element = driver.findElement(selector);
+        new Select(element).selectByValue(value);
+    }
+
+    public WebDriver getDriver() {
+        return driver;
+    }
+
+    /**
      * Method removes focus from the field
      *
      * @param element - element locator to search
@@ -184,9 +208,5 @@ public class BaseFunctions {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].focus(); arguments[0].blur(); return true", element);
         return js;
-    }
-
-    public WebDriver getDriver() {
-        return driver;
     }
 }
